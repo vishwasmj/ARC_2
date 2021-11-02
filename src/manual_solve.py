@@ -86,10 +86,11 @@ def show_result(x, y, yhat):
     print("Our output")
     print(yhat)
     print("Correct?")
-    # if yhat has the right shape, then (y == yhat) is a bool array
-    # and we test whether it is True everywhere. if yhat has the wrong
-    # shape, then y == yhat is just a single bool.
-    print(np.all(y == yhat))
+    if y.shape != yhat.shape:
+        print(f"False. Incorrect shape: {y.shape} v {yhat.shape}")
+    else:
+        print(np.all(y == yhat))
+
 
 if __name__ == "__main__": main()
 
