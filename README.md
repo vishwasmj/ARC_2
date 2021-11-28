@@ -67,5 +67,17 @@ When you're done with a task, use the "load task" button to open a new task.
 
 ## Manually Solved Problems
 
-Some of the 400 available problems picked randomly based on their increasing difficulty levels are available on src/manual_solve.py file in this repo. The details of the tasks are as follows.
-1.83302e8f
+Some of the 400 available problems picked randomly based on their increasing difficulty levels are available on `src/manual_solve.py` file in this repo. The details of the tasks are as follows.
+- 83302e8f
+- c8cbb738
+- 2dd70a9a
+- ded97339
+- ae3edfdc
+- 
+### The Problem Description:
+#### 83302e8f
+There is a square grid, lets call it Grid A, (can be of any size) partitioned into smaller equally sized square grids, let that be Grid B (equally spaced in one task but not constant across each task). These squares are surrounded by a single square boundaries of a constant colour on all sides excepts the edges of the Grid A. These boundaries are broken at several points in such a way that some of the Grid Bs are completely surrounded by the boundaries and some have broken edges. The task is to colour the Grids Bs which are completely surrounded by boundaries in green and the others in yellow. The broken boundaries are also filled with yellow.
+
+![image](https://user-images.githubusercontent.com/74540513/143771351-3d6a3cdc-bfb9-48d8-b55f-5d2564912c16.png)
+
+Correctness of the solution: All test cases are passed
