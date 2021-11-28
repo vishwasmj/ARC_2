@@ -64,3 +64,8 @@ When your output grid is ready, click the green "Submit!" button to check your a
 After you've obtained the correct answer for the current test input grid, you can switch to the next test input grid for the task using the "Next test input" button (if there is any available; most tasks only have one test input).
 
 When you're done with a task, use the "load task" button to open a new task.
+
+## Manually Solved Problems
+
+Some of the 400 available problems picked randomly based on their increasing difficulty levels are available on src/manual_solve.py file in this repo. The details of the tasks are as follows.
+1.83302e8f
