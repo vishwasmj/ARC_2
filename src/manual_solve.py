@@ -53,6 +53,8 @@ In theory can even use Genetic algorithms to find the solution. This might be be
 ### examples below. Delete the three examples. The tasks you choose
 ### must be in the data/training directory, not data/evaluation.
 '''
+
+
 # ---------------------------------------------------solve_83302e8f start-----------------------------------------
 
 def solve_83302e8f(x):
@@ -1236,82 +1238,79 @@ def create_output_grid(ip_seq, colour_pos_in_input, col_codes):
 
 # ---------------------------------------------------solve_feca6190 end-------------------------------------------------
 
-#---------------------------------------------------solve_41e4d17e start-------------------------------------------------
+# ---------------------------------------------------solve_41e4d17e start-------------------------------------------------
 
-def prepare_input_for_training_neural_net(x,y):
-    
-    
+def prepare_input_for_training_neural_net(x, y):
     # activation function
     def sigmoid(x):
-        return(1/(1 + np.exp(-x)))
+        return (1 / (1 + np.exp(-x)))
 
     # Creating the Feed forward neural network
 
     def f_forward(x, w1, w2):
         # hidden
-        z1 = x.dot(w1)# input from layer 1
-        a1 = sigmoid(z1)# out put of layer 2
+        z1 = x.dot(w1)  # input from layer 1
+        a1 = sigmoid(z1)  # out put of layer 2
 
         # Output layer
-        z2 = a1.dot(w2)# input of out layer
-        a2 = sigmoid(z2)# output of out layer
-        return(a2)
+        z2 = a1.dot(w2)  # input of out layer
+        a2 = sigmoid(z2)  # output of out layer
+        return (a2)
 
     # initializing the weights randomly
     def generate_wt(x, y):
-        l =[]
+        l = []
         for i in range(x * y):
             l.append(np.random.randn())
-        return(np.array(l).reshape(x, y))
+        return (np.array(l).reshape(x, y))
 
     # for loss we will be using mean square error(MSE)
     def loss(out, Y):
-        s =(np.square(out-Y))
-        s = np.sum(s)/len(y)
-        return(s)
+        s = (np.square(out - Y))
+        s = np.sum(s) / len(y)
+        return (s)
 
     # Back propagation of error
     def back_prop(x, y, w1, w2, alpha):
 
         # hidden layer
-        z1 = x.dot(w1)# input from layer 1
-        a1 = sigmoid(z1)# output of layer 2
+        z1 = x.dot(w1)  # input from layer 1
+        a1 = sigmoid(z1)  # output of layer 2
 
         # Output layer
-        z2 = a1.dot(w2)# input of out layer
-        a2 = sigmoid(z2)# output of out layer
+        z2 = a1.dot(w2)  # input of out layer
+        a2 = sigmoid(z2)  # output of out layer
         # error in output layer
-        d2 =(a2-y)
+        d2 = (a2 - y)
         d1 = np.multiply((w2.dot((d2.transpose()))).transpose(),
-                                       (np.multiply(a1, 1-a1)))
+                         (np.multiply(a1, 1 - a1)))
 
         # Gradient for w1 and w2
         w1_adj = x.transpose().dot(d1)
         w2_adj = a1.transpose().dot(d2)
 
         # Updating parameters
-        w1 = w1-(alpha*(w1_adj))
-        w2 = w2-(alpha*(w2_adj))
+        w1 = w1 - (alpha * (w1_adj))
+        w2 = w2 - (alpha * (w2_adj))
 
-        return(w1, w2)
+        return (w1, w2)
 
     # Training our input
     # keeping low Learning rate for better step
-    def train(x, Y, w1, w2, alpha = 0.01, epoch = 10):
-        acc =[]
-        losss =[]
+    def train(x, Y, w1, w2, alpha=0.01, epoch=10):
+        acc = []
+        losss = []
         for j in range(epoch):
-            l =[]
+            l = []
             for i in range(len(x)):
                 out = f_forward(x[i], w1, w2)
                 l.append((loss(out, Y[i])))
                 w1, w2 = back_prop(x[i], y[i], w1, w2, alpha)
 
-
-            print("epochs:", j + 1, "======== acc:", (1-(sum(l)/len(x)))*100)  
-            acc.append((1-(sum(l)/len(x)))*100)
-            losss.append(sum(l)/len(x))
-        return(acc, losss, w1, w2)
+            print("epochs:", j + 1, "======== acc:", (1 - (sum(l) / len(x))) * 100)
+            acc.append((1 - (sum(l) / len(x))) * 100)
+            losss.append(sum(l) / len(x))
+        return (acc, losss, w1, w2)
 
     # Predict on the test output with the learned weights from training data
     def predict(x, w1, w2):
@@ -1330,92 +1329,82 @@ def prepare_input_for_training_neural_net(x,y):
                     else:
                         my_list.append(1)
 
-        return np.array(my_list).reshape(15,15)
-    
-    
-    
-    
+        return np.array(my_list).reshape(15, 15)
+
     # Resizing array
     x = [np.array(x).reshape(2, 225)]
-    
+
     # using converting y_train to list
-    y =  [l.tolist() for l in y]
-    
+    y = [l.tolist() for l in y]
+
     # Storing elements in the training grid and one-hot encoding the values to 0 and 1
     created_ip_grid = []
-    
+
     for first_lst_val in x:
-        
+
         for second_sub_val in first_lst_val:
             store_colours = []
             for ele_val in second_sub_val:
                 if ele_val == 8:
-                    store_colours.append(0)  
+                    store_colours.append(0)
                 else:
                     store_colours.append(1)
-        
+
             created_ip_grid.append(store_colours)
-    
 
     # reshaping the input train data 
-    reshaped_ip_grid_1 = np.array(created_ip_grid[0]).reshape(1,225)
-    reshaped_ip_grid_2 = np.array(created_ip_grid[1]).reshape(1,225)
-    
+    reshaped_ip_grid_1 = np.array(created_ip_grid[0]).reshape(1, 225)
+    reshaped_ip_grid_2 = np.array(created_ip_grid[1]).reshape(1, 225)
+
     reshaped_ip_grid = []
     reshaped_ip_grid.append(reshaped_ip_grid_1)
     reshaped_ip_grid.append(reshaped_ip_grid_2)
-    
 
     # reshaping input training values
     y_train_1 = [item for sublist in y for item in sublist]
-    
+
     y_train_2 = [item for sublist in y_train_1 for item in sublist]
-    
-    
+
     store_ytrain_colours = []
-    
+
     for ele_val in y_train_2:
         if ele_val == 8:
-            store_ytrain_colours.append(0)  
+            store_ytrain_colours.append(0)
         else:
             store_ytrain_colours.append(1)
-    
-    
+
     # Store elements output of each array
     y_train_4 = store_ytrain_colours[:225]
-    
+
     y_train_5 = store_ytrain_colours[225:]
 
     # Apending manipulated data to a empty list
     final_y = []
-    
+
     final_y.append(y_train_4)
     final_y.append(y_train_5)
-    
 
-    
     # Generating random weights
     # As we are training on two layers we are generating two weights
     w1 = generate_wt(225, 75)
     w2 = generate_wt(75, 225)
-    
-    
+
     # Converting list of list to array
     y_train_final = np.array(final_y)
-    
+
     # Assigning x and y with created input train data and labels
     x = reshaped_ip_grid
-    
+
     y = y_train_final
-    
+
     # Training our own written model
     acc, losss, w1, w2 = train(x, y, w1, w2, 0.1, 100)
-    
+
     # Predicting on train_data
     my_train_pred_1 = predict(np.array(x[0]), w1, w2)
-    
+
     my_train_pred_2 = predict(np.array(x[1]), w1, w2)
-    
+
     yhat = []
 
     yhat.append(my_train_pred_1)
@@ -1441,42 +1430,36 @@ def prepare_input_for_training_neural_net(x,y):
     print("Output")
 
     print(my_train_pred_2)
-    
-    return yhat,w1,w2
-    
-    
+
+    print()
+
+    return yhat, w1, w2
 
 
-def neural_net_f_prop(x , y, w1, w2):    
-
+def neural_net_f_prop(x, y, w1, w2):
     if len(x) == 2:
-        
-        yhat,w1,w2 = prepare_input_for_training_neural_net(x , y) 
-        
-    
-    return yhat,w1,w2
-    
-    
-        
-def test_predicts_nn(x,y,w1,w2):
-    
+        yhat, w1, w2 = prepare_input_for_training_neural_net(x, y)
+
+    return yhat, w1, w2
+
+
+def test_predicts_nn(x, y, w1, w2):
     # activation function
     def sigmoid(x):
-        return(1/(1 + np.exp(-x)))
+        return (1 / (1 + np.exp(-x)))
 
     # Creating the Feed forward neural network
 
     def f_forward(x, w1, w2):
         # hidden
-        z1 = x.dot(w1)# input from layer 1
-        a1 = sigmoid(z1)# out put of layer 2
+        z1 = x.dot(w1)  # input from layer 1
+        a1 = sigmoid(z1)  # out put of layer 2
 
         # Output layer
-        z2 = a1.dot(w2)# input of out layer
-        a2 = sigmoid(z2)# output of out layer
-        return(a2)
-    
-    
+        z2 = a1.dot(w2)  # input of out layer
+        a2 = sigmoid(z2)  # output of out layer
+        return (a2)
+
     def predict(x, w1, w2):
         Out = f_forward(x, w1, w2)
 
@@ -1493,9 +1476,9 @@ def test_predicts_nn(x,y,w1,w2):
                     else:
                         my_list.append(8)
 
-        return np.array(my_list).reshape(15,15)
+        return np.array(my_list).reshape(15, 15)
 
-    test_ip = [np.array(x).reshape(1,225)]
+    test_ip = [np.array(x).reshape(1, 225)]
 
     created_test_grid = []
 
@@ -1504,50 +1487,34 @@ def test_predicts_nn(x,y,w1,w2):
             store_colours = []
             for ele_val in second_sub_val:
                 if ele_val == 8:
-                    store_colours.append(0)  
+                    store_colours.append(0)
                 else:
                     store_colours.append(1)
 
             created_test_grid.append(store_colours)
 
-
-
-    reshaped_test_grid_1 = np.array(created_test_grid[0]).reshape(1,225)
-
-    #Predicting on train data
+    reshaped_test_grid_1 = np.array(created_test_grid[0]).reshape(1, 225)
+    # Predicting on train data
     my_train_pred = predict(np.array(reshaped_test_grid_1), w1, w2)
-
-
     # Reshaping the test output
-    
-    test_op = list(y)    
-    
+    test_op = list(y)
     test_op = [l.tolist() for l in test_op]
-
     test_flat_list = [item for sublist in test_op for item in sublist]
 
     # Creating a list of neuralnetwork on the test data
-
     test_pred = [l.tolist() for l in my_train_pred]
-
     pred_flat_list = [item for sublist in test_pred for item in sublist]
-    
+
     # Finding the accuracy score
     # How many correct values are predicted from the model
     print("Test Input")
-    print("\n")
-
-    print(np.array(test_flat_list).reshape(15,15))
-
+    print(np.array(test_flat_list).reshape(15, 15))
     print("Our Output")
-    print("\n")
-    print(np.array(pred_flat_list).reshape(15,15))
-    print(accuracy_score(test_flat_list,pred_flat_list))
-        
-        
-    
+    print(np.array(pred_flat_list).reshape(15, 15))
+    print("The Accuracy Score of actual value and predicted value is : ", accuracy_score(test_flat_list, pred_flat_list))
+
+
 def solve_41e4d17e(x):
-    
     """
     Difficulty: Low (But implementing with neural network so difficulty is bit high)
     
@@ -1587,10 +1554,11 @@ def solve_41e4d17e(x):
     return: x, the resultant array with the transformations applied.
     
     """
-    
+
     return x
-    
-#---------------------------------------------------solve_41e4d17e end--------------------------------------------------
+
+
+# ---------------------------------------------------solve_41e4d17e end--------------------------------------------------
 
 def main():
     # Find all the functions defined in this file whose names are
@@ -1641,28 +1609,30 @@ def test(taskID, solve, data):
     example in the task data."""
     print(taskID)
     train_input, train_output, test_input, test_output = data
-    
+
     if taskID == str("41e4d17e"):
         l1 = 0
         l2 = 0
-        yhat,w1,w2 = neural_net_f_prop(train_input, train_output,l1,l2)
-        for x, y, z in zip(train_input, train_input,yhat):
+        yhat, w1, w2 = neural_net_f_prop(train_input, train_output, l1, l2)
+        for x, y, z in zip(train_input, train_input, yhat):
             x = solve(x)
 
         print("Test grids")
         for x, y in zip(test_input, test_output):
             if len(w1) != 0:
-                test_op = test_predicts_nn(x,y,w1,w2)
+                test_op = test_predicts_nn(x, y, w1, w2)
     else:
         print("Training grids")
         for x, y in zip(train_input, train_output):
             yhat = solve(x)
             show_result(x, y, yhat)
-            
+
         print("Test grids")
         for x, y in zip(test_input, test_output):
             yhat = solve(x)
             show_result(x, y, yhat)
+
+
 def show_result(x, y, yhat):
     print("Input")
     print(x)
