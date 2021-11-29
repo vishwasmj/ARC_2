@@ -81,6 +81,8 @@ Some of the 400 available problems picked randomly and solved manually based on 
 This tries to explain the pattern as interpreted by the programmer and further showcase how humans are able to identify patterns and connect problems to previously known information.
 #### 83302e8f
 
+##### Difficulty: high
+
 There is a square grid, lets call it Grid A, (can be of any size) partitioned into smaller equally sized square grids, let that be Grid B (equally spaced in one task but not constant across each task). These squares are surrounded by a single square boundaries of a constant colour on all sides excepts the edges of the Grid A. These boundaries are broken at several points in such a way that some of the Grid Bs are completely surrounded by the boundaries and some have broken edges. The task is to colour the Grids Bs which are completely surrounded by boundaries in green and the others in yellow. The broken boundaries are also filled with yellow.
 
 ![image](https://user-images.githubusercontent.com/74540513/143771351-3d6a3cdc-bfb9-48d8-b55f-5d2564912c16.png)
@@ -89,6 +91,8 @@ Correctness of the solution: All test cases are passed
 
 #### c8cbb738
 
+##### Difficulty: high
+
 We have a space with a background colour and several squares of different colours arranged in various patterns. The patterns can either be a square, cross or rectangle. All of them will have to be arranged into a square in such a way that all their centers are alligned. The rectangles can be of different alignment; length greater than breadth or breadth greater than length. The task on further observation can be thought of as a centre allignment problem
     
 
@@ -96,16 +100,13 @@ We have a space with a background colour and several squares of different colour
 
 Correctness of the solution: All test cases are passed
 
-#### ae3edfdc
 
- Gravity- well, not the regular kind. There are two centres of gravity, blue and red - which has the ability to bring orange and green squares in it's path towards itself, so that it occupies the closest postition wrt to it. The one condition; the attracted squares must be perpendicular to the centre of gravity to get attracted to it.
- 
- ![image](https://user-images.githubusercontent.com/74540513/143843654-6230a8ec-908f-4330-b0be-13c1331d9765.png)
-
-Correctness of the solution: All test cases are passed
 
 
 ### ded97339
+
+##### Difficulty: medium-high
+
 
 Stars in the night sky! A grid of black squares represents the sky and the tiny blue squares, the stars. The task is to find the constellations hidden in the sky and connect them. How do we do this? We need to identify the ones that belong and a constellation and ones that do not. On observation, we can see that there is a simple common rule. All stars belonging to a constellation are on the same row or column.
 All the other stars are loners. 
@@ -114,3 +115,25 @@ All the other stars are loners.
 
 
 Correctness of the solution: All constellations are identified and marked
+
+
+#### ae3edfdc
+
+##### Difficulty: medium
+
+ Gravity- well, not the regular kind. There are two centres of gravity, blue and red - which has the ability to bring orange and green squares in it's path towards itself, so that it occupies the closest postition wrt to it. The one condition; the attracted squares must be perpendicular to the centre of gravity to get attracted to it.
+ 
+ ![image](https://user-images.githubusercontent.com/74540513/143843654-6230a8ec-908f-4330-b0be-13c1331d9765.png)
+
+Correctness of the solution: All test cases are passed
+
+#### feca6190
+
+##### Difficulty: medium
+
+The input grid is a rectangular (list of lists) matrix with variable shape, with numbers rangingfrom 0 to 9. (inclusive). Different colors of the color spectrum are represented by the integers. The task is to determine the color schemes in the input grid, generate a matrix whose shape is given bymultiplication of size of input matrix and the number of colors present inside the grid.Next step is to fill the formed matrix diagonally with color from the input grid, starting with the index value of the
+color in the input grid.
+
+![image](https://user-images.githubusercontent.com/74540513/143889936-4816338f-7f25-4fdd-a5ca-44935e469b1c.png)
+
+Correctness of the solution: All test cases are passed
