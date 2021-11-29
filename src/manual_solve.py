@@ -277,6 +277,380 @@ def get_outputMatrix(a_dict,background_colour):
     #return the transformed square
     return square
 #---------------------------------------------------solve_c8cbb738 end---------------------------------------
+
+# ---------------------------------------------------solve_f35d900a start-------------------------------------
+
+
+def solve_f35d900a(x):
+    """
+    Difficulty: High
+
+    The Problem: The input grid is a rectangular (list of lists) matrix with variable shape, with numbers ranging
+                 from 0 to 9. (inclusive). Different colors of the color spectrum are represented by the integers.
+                 The task is to identify the different colours and their respective positions in the input grid,
+                 create a sqaure matrix around each coloured element such that the colour of the sqaure matrix should
+                 be of the colour of the element present in its sequential position. Then create a horizontal and
+                 vertical connection amongst all the square matrices, the connection is a step by step increment
+                 from middle element of each square matrix towards each other at the same time.
+
+
+    Assumptions: The colour for connecting two sqaure matrix is always 5 (Silver).
+
+
+
+
+    The Approach: Identify the lists where there is a coloured element.
+                  Idenitfy the coloured elemets index, row and column values.
+                  Create square matrix around each coloured element.
+                  Identify the index of zero elements between two non zero elements.
+                  Create hoorizontal connection, Colour code the zero elements connecting the two coloured matrix on the row.
+                  Create Vertical connection, Colour code the zero elements connecting the two coloured matrix on the columns.
+                  Fill the created grid with diagonal elements.
+
+    Note: All test cases passed
+
+    Arguments: x, the nd array representing the input grid
+    return: x, the resultant array with the transformations applied.
+
+    """
+
+    # Create a copy of input array
+    ip_1 = x.copy()
+
+    # COnvert array to a rectangular grid
+    ip_1 = ip_1.tolist()
+
+    # Find the position of coloured elements in the inpput grid
+    pos_input = list(position_of_ele_in_ip(sublist) for sublist in ip_1)
+
+    # Identifying the elements position ,column value holding the element and sublists where the elements are present
+    pos_index, ele_present_index, ele_present_col_num = identifying_col_pos_ele(ip_1)
+
+    # Colours of the elements
+    colour_codes = get_colour_codes(ip_1)
+
+    # New grid having square matrix around the coloured elements
+    ip_1 = create_shape_for_ip_ele(pos_index, colour_codes, ip_1)
+
+    # Remove duplicate rows where element is present in the grid
+    ele_present_index = list(dict.fromkeys(ele_present_index))
+    
+    # Creating horizontal connections
+    ip_1 = create_horizontal_connections(ip_1, ele_present_index)
+
+    # Remove duplicate columns where element is present in the grid
+    ele_present_col_num = list(dict.fromkeys(ele_present_col_num))
+
+    # Create horizontal connections
+    x = create_vertical_connections(ele_present_col_num, ip_1)
+
+    return np.array(x)
+
+
+
+# Identify the positions of the different colours present in the input grid
+def position_of_ele_in_ip(sublist_seq):
+
+    """
+    The major task here is to iterate through each input list and store the position index of different colours.
+    
+    Arguments: sublist_seq- A sublist of input grid.
+    
+    Return:Position of coloured elements present in each sublist
+    """
+
+
+    # list to store the index of the element
+    pos_of_ele = []
+
+    # Iterate through sublists of the input
+    for index, val in enumerate(sublist_seq):
+        # If the value present in the index is greater than 0
+        if val > 0:
+            # Store the index
+            pos_of_ele.append(index)
+
+    return pos_of_ele
+
+
+
+def identifying_col_pos_ele(ip_1):
+
+    """
+    The task of this function is to identify the coloured elements position ,column value holding the element and sublists where the elements are present
+    
+    Arguments: sublist_seq- A sublist of input grid.
+    
+    Return:Position of coloured elements present in each sublist, Value of the element  and column number of the element present
+    """
+
+
+    # Row and column in which the colours are present
+    pos_index = []
+
+    # Rows where the colours are present
+    ele_present_index = []
+
+    # Column index where the colours are present
+    ele_present_columns = []
+
+    # Iterate over each sublist to find the elements
+    for index, sublist in enumerate(ip_1):
+        for n, k in enumerate(sublist):
+            if k > 0:
+                a = [index, n]
+                pos_index.append(a)
+                ele_present_index.append(index)
+                ele_present_columns.append(n)
+
+    return pos_index, ele_present_index, ele_present_columns
+
+
+# Idenitfy different colours present in the input grip
+def get_colour_codes(ip_1):
+
+    
+    """
+    The task of this function is to identify different type of colours of the elements present in the input grid
+    
+    Arguments: sublist_seq- A sublist of input grid.
+    
+    Return:Colour code value of each coloured element
+    """
+
+    
+    # Store colour codes
+    colour_codes = []
+
+    for i in range(len(ip_1)):
+        # check for any value in the row that has value other than 0
+        if any(list(ip_1[i])) != 0:
+            # index of the first colour present in the sublist
+            first_colour_indx = np.min(np.nonzero(ip_1[i]))
+            # get the colour code of first colour based on its index
+            first_colour = ip_1[i][first_colour_indx]
+            # index of the first colour present in the sublist
+            second_colour_indx = np.max(np.nonzero(ip_1[i]))
+            # get the colour code of second colour based on its index
+            second_colour = ip_1[i][second_colour_indx]
+            colour_codes.append(second_colour)
+            colour_codes.append(first_colour)
+
+    return colour_codes
+
+
+def create_shape_for_ip_ele(pos_index, colour_codes, ip_1):
+    
+    """
+    The task of this function is to identify the boundaries of a sqaure matrix around the given position of the coloured element
+    and find the position values of boundaries and fill them with a colour code of the next sequential coloured element of the list.
+    Fill the square matrix position for all the coloured elements.
+    
+    Arguments: ip_1- Entire manipulated input grid.
+               pos_index -  Which gives us the row and position where the coloured element is present
+               colour_codes - Colour code of the next coloured element
+    
+    Return: Manipulated input grid containing coloured square matrix with current coloured element in its centre position
+    """
+
+
+
+    # Iterate over element present index and colour codes
+    for i, j in zip(pos_index, colour_codes):
+        # Row of the coloured element
+        a = i[0]
+        # Column of the coloured element
+        b = i[1]
+
+        # Previous row of the coloured element
+        a1 = a - 1
+
+        # succeeding row of the coloured element
+        a2 = a + 1
+
+        # previous column position index
+        b1 = b - 1
+
+        # succeeding column position index
+        b2 = b + 1
+
+        # Manipulating positions
+        # Filling the identified positions of the sqaure matrix values with colour codes
+        # Fill horizontal position
+        ip_1[a][b1] = j
+        ip_1[a][b2] = j
+
+        # Fill the previous row positions
+        ip_1[a1][b] = j
+        ip_1[a1][b1] = j
+        ip_1[a1][b2] = j
+
+        # Fill next row positions
+        ip_1[a2][b] = j
+        ip_1[a2][b1] = j
+        ip_1[a2][b2] = j
+
+    return ip_1
+
+
+# 
+def find_enclosed_zeroes(lst):
+    
+    """
+    The task of this function is to find the number of enclosed zeros between two non-zero elements of a list.
+    We first identify the first non-zero element of the list and then find the last position value of the non-zero value.
+    Once we get a list with zero value present between two non zero values, we idenitfy the index value of the elements which will
+    help us determine the link between two lists in the grid.
+    
+    Arguments: lst- sublist of the input grid.
+    
+    Return: Index of the zero elements presents between two non zero values and the position of the first non-zero value.
+    """
+    
+    
+    # Identify First non zero and last non zero element in the list
+    try:
+        first_nonzero = next(
+            i
+            for (i, e) in enumerate(lst)
+            if e != 0
+        )
+        last_nonzero = next(
+            len(lst) - i - 1
+            for (i, e) in enumerate(reversed(lst))
+            if e != 0
+        )
+    except StopIteration:
+        return lst[:]
+
+    # Include the element present in the last non-zero position
+    last_nonzero_pos = last_nonzero + 1
+    first_nonzero_pos = first_nonzero
+
+    # Find the index of the elements holding 0 values between two non-zero elements
+    idx_list = [idx for idx, val in enumerate(lst[:first_nonzero_pos] + lst[first_nonzero_pos:last_nonzero_pos]) if
+                val == 0]
+
+    return idx_list, first_nonzero_pos
+
+
+# Create a horizontal connection between the created square matrices
+def create_horizontal_connections(ip_1, ele_present_index):
+
+    """
+    The task of this function is to create horizontal connections between two square matrices present in the same row.
+    We first identify the position of the zero values between two non zero values, then divide the list containiing the position 
+    of non zero elements into two parts. We then reverse the second list and find the alternate position index of zeros which needs 
+    to be filled in order to make connections. We then take the positions which needs to colour coded and then fill the index values 
+    of the grid with silver colour code(5) to make connections.
+    
+    Arguments: ip_1- Manipulated input grid.
+               ele_present_index - Rows and column value where coloured elements are present
+    
+    Return: manipulated input grid containing horizontal connection between the sequential sqaure matrices
+    """
+
+    for i in ele_present_index:
+
+        # Get the index values of the zeros present between two non zero elements
+        lst_containing_zero_ele_index, first_non_zero_pos = find_enclosed_zeroes(ip_1[i])
+
+        # remove/ keep only zeros present after the first non zero element
+        pos_list_clean = []
+
+        for k in lst_containing_zero_ele_index:
+            if k > first_non_zero_pos:
+                pos_list_clean.append(k)
+
+        # Breaking the zero element positions into two seperate lists
+        first_half_lst = pos_list_clean[:len(pos_list_clean) // 2]
+        second_half_lst = pos_list_clean[len(pos_list_clean) // 2:]
+
+        ## Identifying the alternate positions of zero element that has to be coloured from first list
+        ele_to_colour_from_first_lst = first_half_lst[::2]
+
+        # Reversing the second half of the list
+        # As we need to increment from two ends of the matrix
+        new_second_half_lst = second_half_lst[::-1]
+
+        # Identifying the alternate positions of zero element that has to be coloured from second list
+        ele_to_colour_from_second_list = new_second_half_lst[::2]
+
+        # Colour code the connecting elements
+        for j in ele_to_colour_from_first_lst:
+            ip_1[i][j] = 5
+
+        for k in ele_to_colour_from_second_list:
+            ip_1[i][k] = 5
+
+    return ip_1
+
+
+# Create a vertical connection between the created square matrices
+def create_vertical_connections(ele_present_columns, ip_1):
+    
+    """
+    The task of this function is to create verticalconnections between two square matrices present in the same column.
+    We first identify the position of the zero values between two non zero values, then divide the list containiing the position 
+    of non zero elements into two parts. We then reverse the second list and find the alternate position index of zeros which needs 
+    to be filled in order to make connections. We then take the positions which needs to colour coded and then fill the index values 
+    of the grid with silver colour code(5) to make connections.
+    
+    Arguments: ip_1- Manipulated input grid.
+               ele_present_index - Rows and column value where coloured elements are present
+    
+    Return: manipulated input grid containing vertical connection between the sqaure matrices.
+    """
+
+
+    # iterate over columns of the coloured elements
+    for j in ele_present_columns:
+
+        # Get column values of coloured element
+        col_list = []
+
+        for i in range(len(ip_1)):
+            col_list.append(ip_1[i][j])
+
+        # Get the index values of the zeros present between two non zero elements
+        lst_containing_zero_ele_index, first_non_zero_pos = find_enclosed_zeroes(col_list)
+
+        # remove/ keep only zeros present after the first non zero element
+        pos_list_clean = []
+
+        for k in lst_containing_zero_ele_index:
+            if k > first_non_zero_pos:
+                pos_list_clean.append(k)
+
+        first_half_lst = pos_list_clean[:len(pos_list_clean) // 2]
+
+        second_half_lst = pos_list_clean[len(pos_list_clean) // 2:]
+
+        # Identifying the alternate positions of zero element that has to be coloured from first list
+        ele_to_colour_from_first_lst = first_half_lst[::2]
+
+        # Reversing the second half of the list
+        # As we need to increment from two ends of the matrix
+        new_second_half_lst = second_half_lst[::-1]
+
+        # Identifying the alternate positions of zero element that has to be coloured from second list
+        ele_to_colour_from_second_list = new_second_half_lst[::2]
+
+        # Colour code the connecting elements from first element
+        for n in ele_to_colour_from_first_lst:
+            ip_1[n][j] = 5
+
+        # Colour code the connecting elements from the second element
+        for m in ele_to_colour_from_second_list:
+            ip_1[m][j] = 5
+
+    return ip_1
+
+
+
+# ---------------------------------------------------solve_f35d900a end------------------------------------------------
+
+
 #---------------------------------------------------solve_ae3edfdc start-------------------------------------
 def solve_ae3edfdc(x):
     """
@@ -359,6 +733,9 @@ def match_pattern(dict_fig,x,keyPair):
 
     return x
 #---------------------------------------------------solve_ae3edfdc start-------------------------------------
+
+
+
 #---------------------------------------------------solve_ded97339 start-------------------------------------
 def solve_ded97339(x):
     """
@@ -412,7 +789,443 @@ def solve_ded97339(x):
             for i in range(a[0],b[0]):
                 x[i,a[1]]=8           
     return x
-#------------------------------------------------------solve_ded97339- end------------------------------------
+#------------------------------------------------------solve_ded97339- end------------------------------------------
+
+
+# ---------------------------------------------------solve_d0f5fe59 start-----------------------------------------------
+
+
+def solve_d0f5fe59(x):
+    """
+    Difficulty: Medium-to-difficult
+
+    The Problem: The input grid is a rectangular (list of lists) matrix of variable shape, with a single integer number.
+                 Blue colour of the color spectrum are represented by the integer 8.
+                 The task is to identify the boundaries between different shapes, identify and differentiate different shapes,
+                 and create a matrix whose diagnol elements reprents one shape.The created matrix should have a size of
+                 (identified shape * identified shape).
+
+    Assumptions: The colour inside the input grid is always 8.
+                 The number of different shapes in each given input list is not more than 2.
+
+
+
+    The Approach: Identify the lists where there is a coloured element.
+                  Idenitfy the different boundaries of the all the shapes.
+                  Order the elements by checking their boundaries according to its connection with respect to the next elements.
+                  Check for link between the elements of each list.
+                  Identify number of shapes from the link between elements of the grid.
+                  Create a grid having number of shapes present inside the input grid as the shape.
+                  Fill the created grid with diagonal elements.
+
+    Note: All test cases passed
+
+    Arguments: x, the nd array representing the input grid
+    return: x, the resultant array with the transformations applied.
+
+    """
+    # Identify the lists where there is a coloured element
+    pos_of_ele = list(position_of_elements(sublist) for sublist in x)
+    # Remove the null lists from the returned list of list position of elements
+    clean_pos_of_ele = list(filter(lambda x: x, pos_of_ele))
+    # Identify the different boundaries of the all the shapes
+    identified_boundaries_lst = identify_boundaries_of_the_shape(clean_pos_of_ele)
+    # Order the returned list according to its connection with respect to the elements
+    ordered_boundaries_lst = ordered_lst_ele(identified_boundaries_lst)
+    # Check for link between the elements of each list
+    ele_link = link_between_the_elements(ordered_boundaries_lst)
+    # Identify number of shapes from the link between elements of the list of list
+    identified_shapes = identify_diff_shapes(ele_link)
+    # Create an empty grid having number of shapes present inside the input grid as the shape
+    empty_op_grid = np.zeros(shape=(len(identified_shapes), len(identified_shapes)))
+    # Fill the created grid with diagonal elements
+    x = creating_diagnol_matrix(empty_op_grid)
+
+    return np.array(x)
+    
+
+# Check which list of list has elements present inside them
+def position_of_elements(sublist_seq):
+    # list to store the index of the element
+    pos_of_ele = []
+
+    # Iterate through sublists of the input
+    for index, val in enumerate(sublist_seq):
+        # If the value present in the index is greater than 0
+        if val > 0:
+            # Store the index
+            pos_of_ele.append(index)
+
+    return pos_of_ele
+
+
+# Identify the different boundaries of the shape
+def identify_boundaries_of_the_shape(pos_clean_ip):
+
+ 
+    """
+    The task of this function is to identify the boundaries of different shapes present in the input grid. Identify the list of elements 
+    having no null lists amongst them, if the values in sublist are having a difference of more than 1 then it means that the elements present
+    in the list may belong to a different shape or belongs to same shape with any other element connected to it.We further investigate these type 
+    of sublists. We check these sublists with their previous sublist value to check if any element is having a connection with the disconnected 
+    element, if not then we seperate the elements from the list else we keep them in the same list.
+    
+    Arguments: pos_clean_ip- List of elements without containing null list amongst them.
+    
+    Return: boundary splits - list of list , Where each sublist doesnt belong to more than one different shape. 
+    """
+    
+    boundary_splits = []
+
+    for index, sublist in enumerate(pos_clean_ip):
+
+        # Check for difference between the elements of the sublist
+        chck_or_diff_bw_ele = np.diff(sublist)
+
+        # Store it as a list
+        ele_diff = list(chck_or_diff_bw_ele)
+
+        # Store the elements after classifying that they belong to different shapes
+        split_ele_lst = []
+
+        # Check if the difference between the elements of the sublist is greater than 1
+        if (all(ele == 1 for ele in ele_diff)) == False:
+
+            # Check if the previous index is not 0
+            if index != 0:
+                # get the previous sublist
+                before_sublist = pos_clean_ip[index - 1]
+
+            # Find if all the elements present in the current sublist are also present in the previous sublist
+            result = all(elem in before_sublist for elem in sublist)
+
+            # Split the elements in the same row belonging to different shape
+            if result == False:
+
+                num_of_splits = 0
+
+                # Number of splits that should take place in the sublist
+                for j in range(len(sublist) - 1):
+                    difference_of_ele = abs(sublist[j] - sublist[j + 1])
+                    if difference_of_ele > 1:
+                        num_of_splits = num_of_splits + 1
+
+                pos_to_split = []
+                # Find the position where the split should take place
+                for k, n in enumerate(ele_diff):
+                    if n > 1:
+                        pos_to_split.append(k)
+
+                # Split the sublist into further subist based on different identified position boundaries
+                for pos_split in pos_to_split:
+                    size = len(sublist)
+
+                    # Find the idex which is matching the position to split
+                    idx_list = [idx + 1 for idx, val in enumerate(sublist) if idx == pos_split]
+                    # Split and merge the values present in the position split
+                    split_based_on_pos = [sublist[i: j] for i, j in zip([0] + idx_list, idx_list
+                                                                        + ([size] if idx_list[-1] != size else []))]
+
+                    split_ele_lst.append(split_based_on_pos)
+
+        # If there is no elements in sublist to split, then append the sublist
+        if not split_ele_lst:
+            boundary_splits.append(sublist)
+
+        else:
+            # Append the "split and merged list" to the sublist
+            for i in range(len(split_ele_lst)):
+                for j in range(len(split_ele_lst) + 1):
+                    sub_split_lst = split_ele_lst[i][j]
+                    boundary_splits.append(sub_split_lst)
+
+    return boundary_splits
+
+
+# Identify the link between the elements of the list
+def link_between_the_elements(final_list):
+    
+    """
+    The task of this function is to identify the relationship between a current sublist and its succeeding sublist. 
+    Then we store how many elements are matching between the lists.
+    
+    Arguments: final_list- manipulated input grid
+    
+    Return: ele_link - list of list holding elements that are having connections with the elementsts in the successive list.
+    """
+
+
+    ele_link = []
+
+    # Iterate over each row of the boundary list
+    for index in range(len(final_list) - 1):
+        # Elements matching in the current list and next sublistr
+        elements_matching = len([x for x in final_list[index] if x in final_list[index + 1]])
+
+        ele_link.append(elements_matching)
+
+    return ele_link
+
+
+# Check if the list created after spliting is in the correct order
+def ordered_lst_ele(ident_boud_lst):
+
+    """
+    The task of this function is to identify if the elements boundaries list created are in a proper order i.e., to check if the connected elements
+    are present next to each other in the list. If the current element is having connections with the element in successive second index position, 
+    then we change the position of the lists.
+    
+    Arguments: ident_boud_lst- Identified boundary list
+    
+    Return: ident_boud_lst - correctly ordered boundary list.
+    """
+
+    
+    # Iterate over the created list
+    for index, val in enumerate(ident_boud_lst):
+
+        current_sublist = ident_boud_lst[index]
+
+        index_1 = index + 1
+
+        if index_1 < (len(ident_boud_lst) - 1):
+
+            next_sublist = ident_boud_lst[index + 1]
+
+            # check if there is any elements matching between current list and next sublist
+
+            if len(set(current_sublist) & set(next_sublist)) == 0:
+
+                index_2 = index + 2
+
+                if index_2 < (len(ident_boud_lst) - 1):
+                    # check if there is any match of elements on the next to next sublist
+                    nxt_to_nxt_sublist = ident_boud_lst[index_2]
+
+                    if len(set(current_sublist) & set(nxt_to_nxt_sublist)) != 0:
+                        # If there is an element matching the element in our current list then change the
+                        # position of the sublists
+                        ident_boud_lst[index_2], ident_boud_lst[index_1] = ident_boud_lst[index_1], ident_boud_lst[
+                            index_2]
+
+    return ident_boud_lst
+
+
+# Idenitfy different shapes based on the link between the elements
+def identify_diff_shapes(store_link):
+    size = len(store_link)
+
+    # If there is no connection between the shapes then the difference between the list is represented by 0
+    # Find the occourance of the value 0 in the list having the list of elements mapping the of boundaries
+    boundary_idx_list = [idx + 1 for idx, val in enumerate(store_link) if val == 0]
+
+    # Create sublists representing different shapes present in boundary list
+    shapes_present_in_grid = [store_link[i: j] for i, j in
+                              zip([0] + boundary_idx_list, boundary_idx_list +
+                                  ([size] if boundary_idx_list[-1] != size else []))]
+
+    return shapes_present_in_grid
+
+
+# Creating a diagnal matrix whose diagnol elements represents different shapes present in the input grid
+def creating_diagnol_matrix(empty_op_grid):
+    len_of_seq = len(empty_op_grid)
+
+    # assigning iter the value of length of the matrix
+    i = len_of_seq
+
+    pos_counter = [0]
+
+    pos_counter_len = len(pos_counter)
+
+    puzzle_ele = []
+
+    # Colour code the diagnol elements into blue clour
+    target = [8]
+
+    # Iterating till the index is 1
+    while (i >= 1):
+
+        i = i - 1
+        # Elements in the row
+        curr_lst_ele = empty_op_grid[i]
+
+        # Assigning colour value to the diagnol index of the elements
+        for x, y in zip(pos_counter, target):
+            if x < len_of_seq:
+                curr_lst_ele[x] = y
+
+        # Storing the assigned values to the list
+        puzzle_ele.append(curr_lst_ele)
+
+        # Increasing the counter to get the dignol positions for that colour in each row
+        pos_counter = [x + 1 for x in pos_counter]
+
+    manipulated_puzzle_op = [arr.tolist() for arr in puzzle_ele]
+
+    return manipulated_puzzle_op
+
+
+
+# ---------------------------------------------------solve_d0f5fe59 end------------------------------------------------
+
+
+
+
+# ---------------------------------------------------solve_feca6190 start----------------------------------------------
+
+
+
+def solve_feca6190(x):
+    """
+    Difficulty: Medium
+
+    The Problem: The input grid is a rectangular (list of lists) matrix with variable shape, with numbers ranging
+                 from 0 to 9. (inclusive). Different colors of the color spectrum are represented by the integers.
+                 The task is to determine the color schemes in the input grid, generate a matrix whose shape is given by
+                 multiplication of size of input matrix and the number of colors present inside the grid.Next step is to
+                 fill the formed matrix diagonally with color from the input grid, starting with the index value of the
+                 color in the input grid.
+
+    Assumptions: The Input Grid is always of shape 1 * 5.
+                 There cannot be more than five colours present in the grid.
+                 No Colour is repeated.
+
+
+    The Approach: Identify the size of the grid.
+                  Identify the colours present in the grid.
+                  Identify the position of the colour in the grid.
+                  Create an empty array whose shape would be of the size (number of colours * grid size,number of
+                  colours * grid size).
+                  Fill the first array with colours as per their index position of the input grid.
+                  Identify the dignol positions for the elements in the first array and fill them with integers
+                  present in the starting array.
+                  Inverse the matrix to get the matching output.
+
+    Note: All test cases passed
+
+    Arguments: x, the nd array representing the input grid
+    return: x, the resultant array with the transformations applied.
+
+    """
+    # Finding the number of colours and length of the input grid
+    # Returns list of tuple
+    colour_count_and_len_of_ip = list(number_of_colours(sublist) for sublist in x)
+
+    # Finding the index of the colours and return the positions as a list
+    colour_pos_in_input = list(position_of_colours(sublist) for sublist in x)
+
+    # Colour code present in the input grid and return the list of colours
+    col_codes = list(colour_code_count(sublist) for sublist in x)
+
+    # Create an empty matrix based on the number of colours and length of the input array
+    manipulation_grid = create_the_empty_grid(colour_count_and_len_of_ip)
+
+    # Manipulate the empty array
+    # Identify the diagonal positions in the grid
+    # Fill the diagonal positions with its respective colour codes
+    x = create_output_grid(manipulation_grid, colour_pos_in_input, col_codes)
+
+    return np.array(x)
+
+
+# Find the different number of colours in each sublist
+def number_of_colours(sublist_seq):
+    colour_count = 0
+
+    # Iterate over each value of the sublist
+    for index, val in enumerate(sublist_seq):
+        # if their value is greater than zero
+        if val > 0:
+            # increase the count
+            colour_count = colour_count + 1
+
+    # Length of the sublist
+    len_of_sublist_seq = len(sublist_seq)
+
+    return colour_count, len_of_sublist_seq
+
+
+# Find the index where the colours are present in the sublist
+def position_of_colours(sublist_seq):
+    pos_count = []
+
+    for index, val in enumerate(sublist_seq):
+        if val > 0:
+            pos_count.append(index)
+
+    return pos_count
+
+
+# Identify different colours present in the input grid
+def colour_code_count(sublist_seq):
+    colour_codes = []
+
+    for index, val in enumerate(sublist_seq):
+
+        if val > 0:
+            colour_codes.append(val)
+
+    return colour_codes
+
+
+# Create an empty grid based on the length of the sublist and colour count
+def create_the_empty_grid(colour_input):
+    input_seq = np.zeros(shape=(colour_input[0][0] * colour_input[0][1], colour_input[0][0] * colour_input[0][1]))
+
+    return input_seq
+
+
+# Manipulating the created grid to solve the puzzle
+def create_output_grid(ip_seq, colour_pos_in_input, col_codes):
+    len_of_seq = len(ip_seq)
+
+    # assigning iter the value of length of the matrix
+    i = len_of_seq
+
+    # Initiating a counter at the index of the first colour
+    pos_counter = colour_pos_in_input[0]
+
+    pos_counter_len = len(pos_counter)
+
+    # Storing the created dignol rows
+    puzzle_ele = []
+
+    # getting the colour value
+    target = col_codes[0]
+
+    # Iterating till the index is 1
+    while (i >= 1):
+
+        i = i - 1
+
+        # Elements in the row
+        curr_lst_ele = ip_seq[i]
+
+        # Assigning colour value to the diagnol index of the elements
+        for x, y in zip(pos_counter, target):
+            if x < len_of_seq:
+                curr_lst_ele[x] = y
+
+        # Storing the assigned values to the list
+        puzzle_ele.append(curr_lst_ele)
+
+        # Increasing the counter to get the dignol positions for that colour in each row
+        pos_counter = [x + 1 for x in pos_counter]
+
+    # Reversing the list of list
+    final_output = puzzle_ele[::-1]
+
+    # Converting array to list
+    final_output_lst = [arr.tolist() for arr in final_output]
+
+    return final_output_lst
+
+# ---------------------------------------------------solve_feca6190 end-------------------------------------------------
+
+
+
+
 def main():
     # Find all the functions defined in this file whose names are
     # like solve_abcd1234(), and run them.
