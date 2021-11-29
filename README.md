@@ -76,8 +76,19 @@ Some of the 400 available problems picked randomly based on their increasing dif
 - 
 ### The Problem Description:
 #### 83302e8f
+
 There is a square grid, lets call it Grid A, (can be of any size) partitioned into smaller equally sized square grids, let that be Grid B (equally spaced in one task but not constant across each task). These squares are surrounded by a single square boundaries of a constant colour on all sides excepts the edges of the Grid A. These boundaries are broken at several points in such a way that some of the Grid Bs are completely surrounded by the boundaries and some have broken edges. The task is to colour the Grids Bs which are completely surrounded by boundaries in green and the others in yellow. The broken boundaries are also filled with yellow.
 
 ![image](https://user-images.githubusercontent.com/74540513/143771351-3d6a3cdc-bfb9-48d8-b55f-5d2564912c16.png)
 
 Correctness of the solution: All test cases are passed
+
+#### c8cbb738
+
+We have a space with a background colour and several squares of different colours arranged in various patterns. The patterns can either be a square, cross or rectangle. All of them will have to be arranged into a square in such a way that all their centers are alligned. The rectangles can be of different alignment; length greater than breadth or breadth greater than length.
+    
+
+![image](https://user-images.githubusercontent.com/74540513/143841385-ee34c01a-e222-4576-8f4c-56ea9a65c84b.png)
+
+Correctness of the solution: All test cases are passed
+
