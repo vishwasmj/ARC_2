@@ -67,7 +67,10 @@ When you're done with a task, use the "load task" button to open a new task.
 
 ## Manually Solved Problems
 
-Some of the 400 available problems picked randomly based on their increasing difficulty levels are available on `src/manual_solve.py` file in this repo. The details of the tasks are as follows.
+Humans, given time and patience, can solve any of these 400 tasks without difficulty even if no instructions are given to them. This shows their intelligence and if we were to measure the same for machines, where would they stand? Right now, little too far behind. Here, we attempt to solve some of the challenges manually and also attempt to solve the ARC using machine learning. Since most of the current known solutions are data-hungry, the results are not all positive.
+
+Some of the 400 available problems picked randomly and solved manually based on the patterns noticed and is available `src/manual_solve.py` file in this repo. The details of the tasks are as follows.
+
 - 83302e8f
 - c8cbb738
 - 2dd70a9a
@@ -75,6 +78,7 @@ Some of the 400 available problems picked randomly based on their increasing dif
 - ae3edfdc
 - 
 ### The Problem Description:
+This tries to explain the pattern as interpreted by the programmer and further showcase how humans are able to identify patterns and connect problems to previously known information.
 #### 83302e8f
 
 There is a square grid, lets call it Grid A, (can be of any size) partitioned into smaller equally sized square grids, let that be Grid B (equally spaced in one task but not constant across each task). These squares are surrounded by a single square boundaries of a constant colour on all sides excepts the edges of the Grid A. These boundaries are broken at several points in such a way that some of the Grid Bs are completely surrounded by the boundaries and some have broken edges. The task is to colour the Grids Bs which are completely surrounded by boundaries in green and the others in yellow. The broken boundaries are also filled with yellow.
@@ -85,7 +89,7 @@ Correctness of the solution: All test cases are passed
 
 #### c8cbb738
 
-We have a space with a background colour and several squares of different colours arranged in various patterns. The patterns can either be a square, cross or rectangle. All of them will have to be arranged into a square in such a way that all their centers are alligned. The rectangles can be of different alignment; length greater than breadth or breadth greater than length.
+We have a space with a background colour and several squares of different colours arranged in various patterns. The patterns can either be a square, cross or rectangle. All of them will have to be arranged into a square in such a way that all their centers are alligned. The rectangles can be of different alignment; length greater than breadth or breadth greater than length. The task on further observation can be thought of as a centre allignment problem
     
 
 ![image](https://user-images.githubusercontent.com/74540513/143841385-ee34c01a-e222-4576-8f4c-56ea9a65c84b.png)
@@ -100,3 +104,13 @@ Correctness of the solution: All test cases are passed
 
 Correctness of the solution: All test cases are passed
 
+
+### ded97339
+
+Stars in the night sky! A grid of black squares represents the sky and the tiny blue squares, the stars. The task is to find the constellations hidden in the sky and connect them. How do we do this? We need to identify the ones that belong and a constellation and ones that do not. On observation, we can see that there is a simple common rule. All stars belonging to a constellation are perpendicular to each other or connected by stars that are perpendicular to it.
+All the other starts are loners. 
+
+![image](https://user-images.githubusercontent.com/74540513/143848307-14741ef1-5745-458e-bc5d-82ccc3947b71.png)
+
+
+Correctness of the solution: All constellations are identified and marked
