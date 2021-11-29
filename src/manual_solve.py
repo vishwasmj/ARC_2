@@ -359,7 +359,60 @@ def match_pattern(dict_fig,x,keyPair):
 
     return x
 #---------------------------------------------------solve_ae3edfdc start-------------------------------------
+#---------------------------------------------------solve_ded97339 start-------------------------------------
+def solve_ded97339(x):
+    """
+    Difficulty- medium to high
+    Problem description: Stars in the night sky! A grid of black squares represents the sky and the tiny blue 
+    squares, the stars. The task is to find the constellations hidden in the sky and connect them. 
+    How do we do this? We need to identify the ones that belong and a constellation and ones that do not. 
+    On observation, we can see that there is a simple common rule. All stars belonging to a constellation are
+    on the same row or column.
+    All the other starts are loners. 
+    
+    Assumptions: There are no other colours on the grid besides black and blue.
+    
+    Solution: First find the non-black squres. Then find the ones that are on the same row or column. Connect the ones in 
+    the same row, then connect the ones in the same column.
+    
+    Arguments: x the nd array 
+    return: x the transformed array
 
+    """
+    start_pos=[]
+    #find all the non-black squares
+    row,column = np.where(x >0)
+    #get a list of their co-ordinates
+    for r,c in zip(row,column):
+        start_pos.append((r,c))
+        
+    if len(row) != len(set(row)) and len(column) != len(set(column)) :
+        #checking for perpendicular elements by checking for items on the same row
+        b=[item for item, count in collections.Counter(row).items() if count > 1]
+        #checking for points on the same column and creating a list
+        c=[item for item, count in collections.Counter(column).items() if count > 1]
+    row_list=[]
+    col_list=[]
+    #finding all the items perpendicular along the row and columns seperately
+    for (k,h) in start_pos:
+        if k in b:
+            row_list.append((k,h))
+        if h in c:
+            col_list.append((k,h))
+    #find start and end of all the elements in the same row and fill up 
+    for i in range(len(row_list)-1):
+        if row_list[i][0]==row_list[i+1][0]:
+            a=row_list[i]
+            b=row_list[i+1]
+            for i in range(a[1],b[1]):
+                x[a[0],i]=8
+    #find start and end of all the elements in the same column and fill up
+    for a,b in itertools.product(col_list,col_list):
+        if a!=b and a[0]<b[0] and a[1]==b[1]:
+            for i in range(a[0],b[0]):
+                x[i,a[1]]=8           
+    return x
+#------------------------------------------------------solve_ded97339- end------------------------------------
 def main():
     # Find all the functions defined in this file whose names are
     # like solve_abcd1234(), and run them.
