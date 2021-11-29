@@ -101,6 +101,7 @@ We have a space with a background colour and several squares of different colour
 Correctness of the solution: All test cases are passed
 
 
+=======
 #### f35d900a
 ##### Difficulty: High
 
