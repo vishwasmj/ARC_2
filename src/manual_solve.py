@@ -4,7 +4,9 @@ import os, sys
 import json
 import numpy as np
 import re
-
+from collections import Counter
+import itertools
+import collections
 ### YOUR CODE HERE: write at least three functions which solve
 ### specific tasks by transforming the input x and returning the
 ### result. Name them according to the task ID as in the three
@@ -133,7 +135,151 @@ def colour_row(x,r_i,r_j,size_square,grid_len,bound_colour):
     return x
 
 #---------------------------------------------------solve_83302e8f end-----------------------------------------
+#---------------------------------------------------solve_c8cbb738 start---------------------------------------
+def solve_c8cbb738(x):
+    """
+    Difficulty: High
+    The problem: We have a space with a background colour and several squares of different colours arranged in 
+    various patterns. The patterns can either be a square, cross or rectangle. All of them will have to be arranged 
+    into a square in such a way that all their centers are alligned.
+    Note:Rectangle 2 is longer in the vertical direction and rectangle 1 is longer in the horizontal direction
+    
+    Assumptions: Only the three shapes and the rectangle shape in two different forms will be present in the 
+    input pattern.
+    
+    Testing:All test cases passed
+    
+    Approach:Step 1: Identify the background colour.
+             Step 2: Create a dictionary with non background colours and their positions
+             Step 3:Using this Dictionary, identify the shapes and their size
+             Step 4:Create a new Matrix based on the shape, and position the various shapes in it.
+    
+    Argument: x, the n-d array representing the space
+    return: x, after the above transformation is done.
+    
+    """
+    #Step 1: Find the background colour or the most common colour
+    list=x.tolist()
+    #looks for a row that contains only one value and assigns that as the background value.
+    #This is used to avaoid ambiguity in case too many shapes are present and we can't tell the backgroung colour 
+    #by any one row.
+    for i in range(len(list)):
+        #checks if the row has only one colour present
+        if(len(Counter(list[i]).most_common())==1):
+            #if only one colour, that is assumed to be the background colour and
+            c=Counter(list[i]).most_common()
+            #assigned values
+            background_colour=c[0][0]
+            #once background values is found, no further iteration required.
+            break
+    #Step 2: find other colours and their shapes
+    
+    a_dict={}
+    # find the location of all the non-background colour values and add them to a dictionary
+    #with it's position and colour
+    for i in range(len(list)):
+        for j in range(len(list[i])):
+            if list[i][j] !=background_colour:
+                if list[i][j] in a_dict:
+                  a_dict[list[i][j]].append((i,j))
+                else:
+                  a_dict[list[i][j]] = [(i,j)]
+    # Step3: create new square using this dictionary value.
+    square= get_outputMatrix(a_dict,background_colour)
+    #changing the float values to int
+    x=square.astype(int)
 
+    return x
+def get_outputMatrix(a_dict,background_colour):
+    """
+    The major task here is to find the shapes of each of the items with different colours.
+    We assume that it can be any one of the three shapes:- square,cross and rectangle(two variations)
+    First differenciate the squares and rectangles from the cross by checking for 2 values present on the
+    same row and same column. Then we check the length and breadth to tell apart the sqaure and rectangles.
+    Once we seperate everything, we plot it.
+    
+    Arguments: a_dict-The dictionary with all the positions different shapes by their colour as key
+                background_colour- background colour of the initial matrix
+    Return:The new matrix with the centres alligned
+    """
+    # initially we take that none of the shapes are present.
+    square_colour=0
+    rect_1_col=0
+    rect_2_col=0
+    cross_col=0
+    #num of shapes present in the fig
+    size_dict=len(a_dict.keys())
+    
+    for key in a_dict:
+        # all the points for a particular shape
+        list1=a_dict[key]
+        row1=0
+        col1=0
+        #-1 as we're accessing elements using i+1
+        for i in range(len(list1)-1):
+            #checking for squares on the same row
+            if (list1[i][0]==list1[i+1][0]):
+                row1=row1+1
+            #checking for squares on the same column
+            #comparing 1st and 3rd and 2nd and 4th elements
+            if(i==0 or i==1):
+                if (list1[i][1]==list1[i+2][1]):
+                    col1=col1+1
+        #two pair of items on the same row and along the same column
+        if (row1==col1) and (col1==2):
+        #finding length and breadth
+            length=list1[1][1]-list1[0][1]
+            breadth=list1[2][0]-list1[0][0]
+            #condition for square
+            if length==breadth:
+                print("Shape: square Colour ",key)
+                square_colour=key
+                size_sq=abs(length)
+            #rectangle that's longer than broader
+            elif length>breadth:
+                print(" Shape: rectangle 1 Colour ",key)
+                rect_1_col=key
+            #rectangle that's broader than longer
+            else:
+                print("Shape: rectangle 2 Colour ",key)
+                rect_2_col=key
+        #if it doesnt have 2 pairs in the same row and column, it's a cross
+        else:
+            print("Shape: cross Colour ",key)
+            cross_col=key
+    #create a new matrix that can hold the aligned centers
+    square=np.zeros((size_sq+1,size_sq+1))
+    #change the background colour
+    square=np.where(square==0,background_colour, square) 
+    i=0
+    j=0
+    #if square present, plot the square positions
+    if square_colour>0:
+        square[i][j]=square_colour
+        square[i+size_sq][j]=square_colour
+        square[i][j+size_sq]=square_colour
+        square[i+size_sq][j+size_sq]=square_colour
+    #if cross present, plot the cross positions
+    if cross_col>0:
+        square[int(size_sq/2)][0]=cross_col
+        square[0][int(size_sq/2)]=cross_col
+        square[size_sq][int(size_sq/2)]=cross_col
+        square[int(size_sq/2)][size_sq]=cross_col
+    #if rectangle 2 present, plot it's  positions
+    if rect_2_col>0:
+        square[size_sq][int(size_sq/2)+1]=rect_2_col
+        square[size_sq][int(size_sq/2)-1]=rect_2_col
+        square[0][int(size_sq/2)+1]=rect_2_col
+        square[0][int(size_sq/2)-1]=rect_2_col
+    #if rectangle 1 present, plot it's  positions
+    if rect_1_col>0:
+        square[int(size_sq/2)-1][0]=rect_1_col
+        square[int(size_sq/2)+1][0]=rect_1_col
+        square[int(size_sq/2)-1][size_sq]=rect_1_col
+        square[int(size_sq/2)+1][size_sq]=rect_1_col
+    #return the transformed square
+    return square
+#---------------------------------------------------solve_c8cbb738 end---------------------------------------
 def main():
     # Find all the functions defined in this file whose names are
     # like solve_abcd1234(), and run them.
