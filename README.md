@@ -73,10 +73,12 @@ Some of the 400 available problems picked randomly and solved manually based on 
 
 - 83302e8f
 - c8cbb738
-- 2dd70a9a
+- f35d900a
+- d0f5fe59
 - ded97339
 - ae3edfdc
-- 
+- feca6190
+
 ### The Problem Description:
 This tries to explain the pattern as interpreted by the programmer and further showcase how humans are able to identify patterns and connect problems to previously known information.
 #### 83302e8f
@@ -101,7 +103,6 @@ We have a space with a background colour and several squares of different colour
 Correctness of the solution: All test cases are passed
 
 
-=======
 #### f35d900a
 ##### Difficulty: High
 
@@ -113,6 +114,15 @@ vertical connection amongst all the square matrices, the connection is a step by
 
 Correctness of the solution: All test cases are passed
 
+#### d0f5fe59
+##### Difficulty: Medium to high
+
+The input grid is a rectangular (list of lists) matrix of variable shape, with a single integer number.Blue colour of the color spectrum are represented by the integer 8.
+The task is to identify the boundaries between different shapes, identify and differentiate different shapes, and create a matrix whose diagnol elements reprents one shape.The created matrix should have a size of (identified shape * identified shape).
+
+![image](https://user-images.githubusercontent.com/74540513/143909421-2cfcfc6f-84d2-4cfb-b337-2a7f851dd69a.png)
+
+Correctness of the solution: All test cases are passed
 
 ### ded97339
 
@@ -148,3 +158,23 @@ color in the input grid.
 ![image](https://user-images.githubusercontent.com/74540513/143889936-4816338f-7f25-4fdd-a5ca-44935e469b1c.png)
 
 Correctness of the solution: All test cases are passed
+
+### Neural Networks on ARC
+
+While working on the manual solutions, it is identified that a lot of the tasks are similar and can be generalized to some extend. While Neural Networks are notoriously data
+hungry, we were still able to get up to 70 percent accuracy for the task attempted. Given only 2 train data, this is good performance on a neural network. We were able to identify the squares and the lines and draw corresponding patterns in the output, similarly we can generalize any of the given problems, especially the ones where the input and output are of the same dimensions. The initial idea was that neural networks are good at image recognition and pattern identification, so should be a good solution to this. However, that wasn't the case, but there sure are other directions worth looking into like cellular automata, genetic algorithm and so on..
+
+#### 41e4d17e
+
+![image](https://user-images.githubusercontent.com/74540513/143941244-cb5e12b2-7606-4e58-85e8-909a99849a27.png)
+
+The task here is pretty simple. We just need to identify the squares, go to it's centre and draw pink lines on either sides till the end of the grid.
+
+Attached below are the expected and obtained result using neural network. While it might still be way off, parts of the squares were identified and the lines are also drawn to some extend. Of course, this was one of the better outputs after a lot of runs, so as mentioned above, a long way to go before it is an ideal solution. But that just means we have yet to create a machine intelligent enough to pass the ARC test. 
+
+![image](https://user-images.githubusercontent.com/74540513/143942827-c976bb12-73d7-497e-a49e-0d692ac7064c.png)
+
+
+![image](https://user-images.githubusercontent.com/74540513/143943812-baee486c-2b83-474b-8df2-431c49964730.png)
+
+Correctness of the solution: We still have a long way to go before we create a  "ARC smart" machine using neural networks!
