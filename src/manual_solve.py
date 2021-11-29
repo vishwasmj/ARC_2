@@ -1442,8 +1442,6 @@ def prepare_input_for_training_neural_net(x,y):
 
     print(my_train_pred_2)
     
-    print()
-    
     return yhat,w1,w2
     
     
