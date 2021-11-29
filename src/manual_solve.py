@@ -203,10 +203,7 @@ def get_outputMatrix(a_dict,background_colour):
     Return:The new matrix with the centres alligned
     """
     # initially we take that none of the shapes are present.
-    square_colour=0
-    rect_1_col=0
-    rect_2_col=0
-    cross_col=0
+    square_colour=rect_1_col=rect_2_col=cross_col=0
     #num of shapes present in the fig
     size_dict=len(a_dict.keys())
     
@@ -280,6 +277,89 @@ def get_outputMatrix(a_dict,background_colour):
     #return the transformed square
     return square
 #---------------------------------------------------solve_c8cbb738 end---------------------------------------
+#---------------------------------------------------solve_ae3edfdc start-------------------------------------
+def solve_ae3edfdc(x):
+    """
+    Difficulty: Medium
+    
+    The problem description: Gravity- well, not the regular kind. There are two centres of gravity, blue and
+    red - which has the ability to bring orange and green squares in it's path towards itself, so that it 
+    occupies the closest postition wrt to it. The one condition, the attracted squares must be 
+    perpendicular to the centre of gravity to get attracted to it.
+    
+    Assumptions: There are no other colours in the space. The non-centres are always perpendicular to the centres.
+    
+    The approach: Locate all the colourfull squares in the 'space'. Then locate the centres of gravity.
+    Pair them up together as blue to orange and red to green. Check along the perpendicular path.
+    If there are any squares in it's path, move it to the closest position in the same line.
+    
+    Testing:All test cases passed
+    
+    Argument: x, the n-d array representing the space
+    return: x, after the above transformation is done.
+    
+    """
+    
+    # find all the squares where colour not equal to black
+    row,column = np.where(x > 0)
+    colour_dict={}
+    #put them all into one dictionary
+    for r,c in zip(row,column):
+        if x[r][c] in colour_dict:
+            colour_dict[x[r][c]].append((r,c))
+        else:
+            colour_dict[x[r][c]] = [(r,c)]
+    
+    #-------------------Hardcoding the colours for the centres and it's pairs
+    center1=2
+    center2=1
+    pair1=3
+    pair2=7
+    #-----------------
+    #Creating two dictionaries based on the centre-pair value
+    keyPair1 = [center1, pair1]
+    keyPair2 = [center2, pair2]
+    d1 = {x: colour_dict[x] for x in colour_dict if x in keyPair1}
+    d2 = {x: colour_dict[x] for x in colour_dict if x in keyPair2}
+    #moving the position of the first centre-pair pair
+    half_done=match_pattern(d1,x,keyPair1)
+    #sending the half transformed to transform the rest
+    final=match_pattern(d2,half_done,keyPair2)
+    x=final
+    return x
+
+def match_pattern(dict_fig,x,keyPair):
+   #get the row and column of the centre
+    r=dict_fig[keyPair[0]][0][0]
+    c=dict_fig[keyPair[0]][0][1]
+    #for every square belonging to this key-pair
+    for v in dict_fig[keyPair[1]]:
+        #if in the same row as the centre of gravity but before it
+        if v[0]==r and v[1]<c:
+            #closest point to centre on the same side
+            x[r][c-1]=keyPair[1]
+            #set the old position to 0
+            x[v[0]][v[1]]=0
+      #if in the same row as the centre of gravity but after it
+        elif v[0]==r and v[1]>c:
+            #closest point to centre on the same side
+            x[r][c+1]=keyPair[1]
+            x[v[0]][v[1]]=0
+        #if in the same column as the centre of gravity but above it
+        elif v[1]==c and v[0]<c:
+            x[r-1][c]=keyPair[1] 
+            x[v[0]][v[1]]=0
+        #if in the same column as the centre of gravity but below it
+        elif v[1]==c and v[0]>c:
+            x[r+1][c]=keyPair[1]
+            x[v[0]][v[1]]=0
+        else:
+            #not per assumption
+            raise Exception("Pattern not handled")
+
+    return x
+#---------------------------------------------------solve_ae3edfdc start-------------------------------------
+
 def main():
     # Find all the functions defined in this file whose names are
     # like solve_abcd1234(), and run them.
