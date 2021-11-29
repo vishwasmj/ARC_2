@@ -92,3 +92,11 @@ We have a space with a background colour and several squares of different colour
 
 Correctness of the solution: All test cases are passed
 
+#### ae3edfdc
+
+ Gravity- well, not the regular kind. There are two centres of gravity, blue and red - which has the ability to bring orange and green squares in it's path towards itself, so that it occupies the closest postition wrt to it. The one condition; the attracted squares must be perpendicular to the centre of gravity to get attracted to it.
+ 
+ ![image](https://user-images.githubusercontent.com/74540513/143843654-6230a8ec-908f-4330-b0be-13c1331d9765.png)
+
+Correctness of the solution: All test cases are passed
+
