@@ -101,6 +101,17 @@ We have a space with a background colour and several squares of different colour
 Correctness of the solution: All test cases are passed
 
 
+=======
+#### f35d900a
+##### Difficulty: High
+
+Expand and connect. The input grid is a rectangular (list of lists) matrix with variable shape, with numbers ranging from 0 to 9. (inclusive). Different colors of the color spectrum are represented by the integers. The task is to identify the different colours and their respective positions in the input grid, create a sqaure matrix around each coloured element such that the colour of the sqaure matrix should be of the colour of the element present in its sequential position. Then create a horizontal and
+vertical connection amongst all the square matrices, the connection is a step by step increment from middle element of each square matrix towards each other at the same time.
+
+![image](https://user-images.githubusercontent.com/74540513/143908496-61d70002-1070-468e-9f2f-7bd39f5d4d3d.png)
+
+
+Correctness of the solution: All test cases are passed
 
 
 ### ded97339
