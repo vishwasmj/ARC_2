@@ -107,8 +107,8 @@ Correctness of the solution: All test cases are passed
 
 ### ded97339
 
-Stars in the night sky! A grid of black squares represents the sky and the tiny blue squares, the stars. The task is to find the constellations hidden in the sky and connect them. How do we do this? We need to identify the ones that belong and a constellation and ones that do not. On observation, we can see that there is a simple common rule. All stars belonging to a constellation are perpendicular to each other or connected by stars that are perpendicular to it.
-All the other starts are loners. 
+Stars in the night sky! A grid of black squares represents the sky and the tiny blue squares, the stars. The task is to find the constellations hidden in the sky and connect them. How do we do this? We need to identify the ones that belong and a constellation and ones that do not. On observation, we can see that there is a simple common rule. All stars belonging to a constellation are on the same row or column.
+All the other stars are loners. 
 
 ![image](https://user-images.githubusercontent.com/74540513/143848307-14741ef1-5745-458e-bc5d-82ccc3947b71.png)
 
